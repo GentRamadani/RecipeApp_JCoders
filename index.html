@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Finder</title>
+</head>
+<body>
+    <h1>Recipe Finder</h1>
+    <input type="text" id="searchInput" placeholder="Search for recipes">
+    <button id="searchButton">Search</button>
+    <div id="recipeResults"></div>
+
+    <script src="recipeModule.js"></script>
+    <script src="apiModule.js"></script>
+    <script>
+        const recipeModule = new RecipeModule();
+        const apiModule = new APIModule();
+
+        document.getElementById('searchButton').addEventListener('click', async () => {
+            const searchInput = document.getElementById('searchInput').value;
+            const recipes = await apiModule.fetchRecipes(searchInput);
+            displayRecipes(recipes);
+        });
+
+        function displayRecipes(recipes) {
+            const recipeResultsDiv = document.getElementById('recipeResults');
+            recipeResultsDiv.innerHTML = '';
+
+            recipes.forEach(recipe => {
+                const recipeDiv = document.createElement('div');
+                recipeDiv.innerHTML = `
+                    <h2>${recipe.name}</h2>
+                    <h3>Ingredients:</h3>
+                    <ul>
+                        ${recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+                    </ul>
+                    <h3>Instructions:</h3>
+                    <p>${recipe.instructions}</p>
+                `;
+                recipeResultsDiv.appendChild(recipeDiv);
+            });
+        }
+    </script>
+    
+</body>
+</html>
